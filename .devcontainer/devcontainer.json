@@ -1,0 +1,15 @@
+{
+  "name": "bsc-smart-contract-audit",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "JuanBlanco.solidity",
+        "tintinweb.solidity-visual-auditor",
+        "ms-python.python"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+} 
