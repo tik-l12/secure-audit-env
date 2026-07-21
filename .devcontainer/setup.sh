@@ -47,4 +47,14 @@ mythscan() {
 }
 EOF
 
+echo "Installing Go (required for Medusa)..."
+curl -L https://go.dev/dl/go1.23.4.linux-amd64.tar.gz -o /tmp/go.tar.gz
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> "$HOME/.bashrc"
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+
+echo "Installing Medusa (property-based fuzzer)..."
+go install github.com/crytic/medusa@latest
+
 echo "Setup complete."
