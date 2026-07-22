@@ -39,13 +39,30 @@ deactivate
 echo "Adding mythscan shortcut..."
 cat >> "$HOME/.bashrc" << 'EOF'
 
-# Mythril shortcut: run 'myth analyze' inside its isolated venv automatically
+# Mythril shortcut: passes real subcommands through, defaults to 'analyze' otherwise
 mythscan() {
     source "$HOME/mythril-env/bin/activate"
-    myth analyze "$@"
+    case "$1" in
+        analyze|a|disassemble|d|concolic|c|foundry|f|list-detectors|read-storage|function-to-hash|hash-to-address|version|help|safe-functions)
+            myth "$@"
+            ;;
+        *)
+            myth analyze "$@"
+            ;;
+    esac
     deactivate
 }
 EOF
+
+echo "Installing solc 0.6.12 (for testing older-pragma contracts like CAKE)..."
+pip install --break-system-packages solc-select
+solc-select install 0.6.12
+solc-select use 0.6.12
+
+echo "Linking solc 0.6.12 into Mythril's compiler cache (avoids network fetch)..."
+mkdir -p "$HOME/.solcx"
+cp "$HOME/.solc-select/artifacts/solc-0.6.12/solc-0.6.12" "$HOME/.solcx/solc-v0.6.12"
+chmod +x "$HOME/.solcx/solc-v0.6.12"
 
 echo "Installing Go (required for Medusa)..."
 curl -L https://go.dev/dl/go1.23.4.linux-amd64.tar.gz -o /tmp/go.tar.gz
